@@ -2,17 +2,19 @@
 
 class Program
 {
-    const string ProjectName = "Eon";
-    static readonly ConsoleColor Color = ConsoleColor.DarkBlue;
-    static readonly ConsoleColor Important = ConsoleColor.DarkYellow;
+    const string ProjectName = "Eon"; // Project Name
+    static readonly ConsoleColor Color = ConsoleColor.Magenta; // Project Name Color
+    static readonly ConsoleColor Important = ConsoleColor.DarkYellow; // Important Color
+    const int CloseHelper = 15000; // Adjust this to your personal liking (1000 = 1 Second)
+
     static async Task Main()
     {
-        Console.Title = $"{ProjectName} Crash Report Client";
+        Console.Title = $"{ProjectName} Helper";
         Print("We're sorry that your game has crashed and an error has occurred.\nBy submitting this crash report, you assist our developers in identifying and resolving issues more efficiently.\n");
-        Console.Write(new string('-', 35) + "( "); Console.ForegroundColor = Color; Console.Write(ProjectName); Console.ResetColor(); Console.WriteLine(" )" + new string('-', 35) + "\n");
+        PrintHeader(ProjectName, Color);
 
         Console.Write("Would you like to submit the crash report to help improve the game? (Yes to continue): ");
-        string Answer = Console.ReadLine();  
+        string Answer = Console.ReadLine();
         Console.WriteLine();
 
         if (string.Equals(Answer, "Yes", StringComparison.OrdinalIgnoreCase))
@@ -52,9 +54,9 @@ class Program
                             if (Recent.Count > 0)
                             {
                                 string Download = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                                string Folder = Path.Combine(Download, "Downloads", $"{ProjectName} Crash Report.zip");
+                                string Folder = Path.Combine(Download, "Downloads", $"{ProjectName} CrashReport.zip");
 
-                                if (File.Exists(Folder)){
+                                if (File.Exists(Folder)) {
                                     File.Delete(Folder);
                                 }
 
@@ -67,7 +69,8 @@ class Program
                                     }
                                 }
 
-                                Console.Write("\n" + new string('-', 35) + "( "); Console.ForegroundColor = Important; Console.Write("IMPORTANT"); Console.ResetColor(); Console.WriteLine(" )" + new string('-', 35) + "\n");
+                                Console.WriteLine();
+                                PrintHeader("IMPORTANT", Important);
                                 PrintImportant($"Crash report files have been compressed and saved to: {Folder}");
                                 PrintImportant("Please send the zip file in the Discord server so we can review it.");
                             }
@@ -101,11 +104,11 @@ class Program
             Print("No actions will be taken.");
         }
 
-        Console.WriteLine("\nThank you for submitting your crash report. We will review it as soon as possible! Closing in 5 seconds...");
-        await Task.Delay(5000);
+        PrintImportant($"Thank you for submitting your crash report. We will review it as soon as possible! Closing in {CloseHelper / 1000} seconds...");
+        await Task.Delay(CloseHelper);
     }
 
-    static void Print(string message)
+    static void Print(string Message)
     {
         Console.Write("[");
         Console.Write(DateTime.Now.ToString());
@@ -113,10 +116,10 @@ class Program
         Console.ForegroundColor = Color;
         Console.Write(ProjectName);
         Console.ResetColor();
-        Console.WriteLine($"] {message}");
+        Console.WriteLine($"] {Message}");
     }
 
-    static void PrintImportant(string message)
+    static void PrintImportant(string Message)
     {
         Console.Write("[");
         Console.Write(DateTime.Now.ToString());
@@ -124,6 +127,20 @@ class Program
         Console.ForegroundColor = Important;
         Console.Write(ProjectName);
         Console.ResetColor();
-        Console.WriteLine($"] {message}");
+        Console.WriteLine($"] {Message}");
+    }
+
+    static void PrintHeader(string Header, ConsoleColor Color)
+    {
+        int X = 100; 
+        int Y = Header.Length;
+        int Z = (X - Y - 4) / 2; 
+
+        string Dashes = new string('-', Z);
+        Console.Write($"{Dashes} ( ");
+        Console.ForegroundColor = Color;
+        Console.Write(Header);
+        Console.ResetColor();
+        Console.WriteLine($" ) {Dashes}\n");
     }
 }
