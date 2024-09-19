@@ -5,7 +5,7 @@ class Program
     const string ProjectName = "Eon"; // Project Name
     static readonly ConsoleColor Color = ConsoleColor.Magenta; // Project Name Color
     static readonly ConsoleColor Important = ConsoleColor.DarkYellow; // Important Color
-    const int CloseHelper = 15000; // Adjust this to your personal liking (1000 = 1 Second)
+    const int CloseHelper = 15; // Adjust this to your personal liking (15 Seconds)
 
     static async Task Main()
     {
@@ -73,6 +73,8 @@ class Program
                                 PrintHeader("IMPORTANT", Important);
                                 PrintImportant($"Crash report files have been compressed and saved to: {Folder}");
                                 PrintImportant("Please send the zip file in the Discord server so we can review it.");
+                                PrintImportant($"Thank you for submitting your crash report. We will review it as soon as possible! Closing in {CloseHelper} seconds...");
+                                await Task.Delay(CloseHelper * 1000);
                             }
                             else
                             {
@@ -103,9 +105,6 @@ class Program
         {
             Print("No actions will be taken.");
         }
-
-        PrintImportant($"Thank you for submitting your crash report. We will review it as soon as possible! Closing in {CloseHelper / 1000} seconds...");
-        await Task.Delay(CloseHelper);
     }
 
     static void Print(string Message)
