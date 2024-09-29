@@ -1,4 +1,6 @@
-﻿using System.IO.Compression;
+﻿using System.Net.Http;
+using System.IO.Compression;
+using System.Text;
 
 class Program
 {
@@ -53,8 +55,8 @@ class Program
 
                             if (Recent.Count > 0)
                             {
-                                string Download = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                                string Folder = Path.Combine(Download, "Downloads", $"{ProjectName} CrashReport.zip");
+                                string TempFolder = Path.GetTempPath();
+                                string Folder = Path.Combine(TempFolder, $"{ProjectName} CrashReport.zip");
 
                                 if (File.Exists(Folder)) {
                                     File.Delete(Folder);
@@ -72,8 +74,12 @@ class Program
                                 Console.WriteLine();
                                 PrintHeader("IMPORTANT", Important);
                                 PrintImportant($"Crash report files have been compressed and saved to: {Folder}");
-                                PrintImportant("Please send the zip file in the Discord server so we can review it.");
-                                PrintImportant($"Thank you for submitting your crash report. We will review it as soon as possible! Closing in {CloseHelper} seconds...");
+                                PrintImportant("Uploading the crash report to the web server...");
+
+                                
+                                await UploadCrashReportToServer(Folder);
+
+                                PrintImportant("Thank you for submitting your crash report. We will review it as soon as possible! Closing in {CloseHelper} seconds...");
                                 await Task.Delay(CloseHelper * 1000);
                             }
                             else
@@ -104,6 +110,33 @@ class Program
         else
         {
             Print("No actions will be taken.");
+        }
+    }
+
+    static async Task UploadCrashReportToServer(string filePath)
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            try
+            {
+                var serverUrl = "http:///upload"; // Add your server URL or IP
+                var form = new MultipartFormDataContent();
+
+                
+                var fileContent = new ByteArrayContent(File.ReadAllBytes(filePath));
+                fileContent.Headers.Add("Content-Type", "application/zip");
+                form.Add(fileContent, "file", Path.GetFileName(filePath));
+
+                
+                var response = await client.PostAsync(serverUrl, form);
+                response.EnsureSuccessStatusCode();
+
+                Console.WriteLine("Crash report successfully uploaded to the server!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error uploading crash report to server: {ex.Message}");
+            }
         }
     }
 
