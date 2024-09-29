@@ -22,3 +22,10 @@
    static readonly ConsoleColor Important = ConsoleColor.DarkYellow;
    ```
    You can replace the colors with other available `ConsoleColor` options in C#. For a complete list, refer to the C# documentation.
+
+3. **URL for Crash Report**
+   Modify the server URL to show your server, and add a route.
+```csharp
+   var serverUrl = "http:///upload";
+   ```
+
