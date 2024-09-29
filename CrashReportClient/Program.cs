@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System.IO.Compression;
 using System.Text;
 
@@ -55,8 +55,9 @@ class Program
 
                             if (Recent.Count > 0)
                             {
+                                string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
                                 string TempFolder = Path.GetTempPath();
-                                string Folder = Path.Combine(TempFolder, $"{ProjectName} CrashReport.zip");
+                                string Folder = Path.Combine(TempFolder, $"{userName}.{ProjectName} CrashReport.zip");
 
                                 if (File.Exists(Folder)) {
                                     File.Delete(Folder);
