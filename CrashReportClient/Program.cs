@@ -55,9 +55,9 @@ class Program
 
                             if (Recent.Count > 0)
                             {
-                                string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+                               string random = GenerateRandomString(5);
                                 string TempFolder = Path.GetTempPath();
-                                string Folder = Path.Combine(TempFolder, $"{userName}.{ProjectName} CrashReport.zip");
+                                string Folder = Path.Combine(TempFolder, $"{random}.{ProjectName} CrashReport.zip");
 
                                 if (File.Exists(Folder)) {
                                     File.Delete(Folder);
@@ -113,6 +113,18 @@ class Program
             Print("No actions will be taken.");
         }
     }
+
+    public static string GenerateRandomString(int length)
+{
+    var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    var result = new System.Text.StringBuilder(length);
+    var bytes = CryptographicBuffer.GenerateRandom((uint)length * 4).ToArray();
+    for (int i = 0; i < bytes.Length; i += 4)
+    {
+        result.Append(BitConverter.ToUInt32(bytes, i) % chars.Length);
+    }
+    return result.ToString();
+}
 
     static async Task UploadCrashReportToServer(string filePath)
     {
